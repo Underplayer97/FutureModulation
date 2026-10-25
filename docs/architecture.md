@@ -11,6 +11,7 @@ PipeWire handles audio routing. Qt provides the UI. Effects are data-driven (JSO
 FutureModulation/
 ├── src/
 │   ├── audio/                # Microphone routing and mixing handling using PipeWire
+│   │    └── engine           # Handles creating and destroying PipeWire filters
 │   ├── core/                 # Presets, Effect Chain, DSP, Plugin Hosting
 │   └── ui/                   # Front end Graphical User Interface using the Qt Framework
 └── docs/
@@ -20,3 +21,5 @@ FutureModulation/
 - Dependencies point one way: ui → audio → core.
 - `core` never includes Qt or PipeWire headers.
 - The real-time thread never allocates memory, locks, or does I/O.
+- `pw_init` and `pw_deinit` belong to main
+- The node currently starts unlinked

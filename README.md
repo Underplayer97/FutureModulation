@@ -2,7 +2,7 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![project_license][license-shield]][license-url]
+[![License][license-shield]][license-url]
 
 <div align="center">
 <h1 align="center">FutureModulation</h1>
@@ -10,7 +10,7 @@
 
 > A Linux Voice Changer that adds effects to your microphone for OBS, Discord, and other apps, using Qt and PipeWire.
 > 
-> Project is still in early development, nothing is built yet.
+> Project is still in early development, microphone passthrough is the only thing built.
 
 
 <!-- GETTING STARTED -->
@@ -19,7 +19,7 @@
 ### Prerequisites
 * Arch
     ```bash
-    pacman -S --needed base-devel cmake qt6-base pipewire
+    sudo pacman -S --needed base-devel cmake qt6-base pipewire
     ```
 
 ### Installation
@@ -36,15 +36,59 @@
     cmake --build build
     ```
 
-<!-- USAGE EXAMPLES -->
+<!-- USAGE -->
 ## Usage
 
-TBD
+### Start the Program
+```bash
+./build/FutureModulation
+```
+
+This creates a PipeWire filter with two input and output channels. It **does not automatically connect to anything**, so you will have to manually link it to your sources and sinks, and apps such as Discord will be unable to see it as a viable microphone.
+
+### Connecting the filter
+
+**Option 1: Graphical patchbay (qpwgraph)**
+
+1. Run `./build/futuremodulation` in a terminal.
+2. Open [qpwgraph](https://gitlab.freedesktop.org/rncbc/qpwgraph) (or Helvum, or Carla's patchbay).
+3. Find the `FutureModulation` node in the graph.
+4. Drag from your app or microphone's output port to `FutureModulation`'s input ports.
+5. Drag from `FutureModulation`'s output ports to your speakers or headphones.
+
+```
+[ HyperX QuadCast S Analog Stereo ] ──▶ [ FutureModulation ] ──▶ [ Built-in Audio Speakers ]
+```
+
+**Option 2: Command line (pw-link)**
+
+List available ports:
+
+```bash
+pw-link -o    # output ports (sources)
+pw-link -i    # input ports (sinks)
+```
+
+Connect them:
+
+```bash
+pw-link "HyperX QuadCast S Analog Stereo:capture_FL" "FutureModulation:input_FL"
+pw-link "HyperX QuadCast S Analog Stereo:capture_FR" "FutureModulation:input_FR"
+pw-link "FutureModulation:output_FL" "alsa_output.pci-0000_00_1f.3.analog-stereo:playback_FL"
+pw-link "FutureModulation:output_FR" "alsa_output.pci-0000_00_1f.3.analog-stereo:playback_FR"
+```
+
+Disconnect with `-d`:
+
+```bash
+pw-link -d "Firefox:output_FL" "FutureModulation:input_FL"
+```
 
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Add PipeWire Passthrough
+- [x] Add PipeWire Passthrough
+  - [ ] Locate and Connect Active Microphone to PipeWire
 - [ ] Add Built-in Effects
 - [ ] Setup JSON Presets
 - [ ] Build UI

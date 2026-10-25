@@ -1,6 +1,9 @@
 # Prerequisites
 *.d
 
+# Idea
+.idea
+
 # Compiled Object files
 *.slo
 *.lo
@@ -45,7 +48,7 @@ build-*/
 
 # CMake generated files
 CMakeFiles/
-cmake-build-debug/
+cmake-build-*/
 CMakeCache.txt
 cmake_install.cmake
 Makefile
